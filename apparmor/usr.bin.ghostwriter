@@ -1,0 +1,10 @@
+#include <tunables/global>
+
+/usr/bin/ghostwriter {
+  #include <abstractions/ghostwriter>
+
+  /usr/bin/ r,
+  /usr/bin/ghostwriter r,
+
+  #include <local/usr.bin.ghostwriter>
+}

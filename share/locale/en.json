@@ -1,0 +1,19 @@
+{
+    "systray_menu_exit": "Quit",
+    "gui_settings_window_title": "Settings",
+    "gui_choose_folder": "Chose a lektor project folder",
+    "button_open": "Open",
+    "button_close": "Close",
+    "button_view": "View",
+    "button_edit": "Edit",
+    "button_push": "Push",
+    "button_sync": "Sync",
+    "button_rebase": "Rebase",
+    "button_onion": ".onion",
+    "button_settings": "Settings",
+    "project_status_label": "Project",
+    "tab_web": "Web",
+    "tab_git": "Git",
+    "tab_onion": ".onion",
+    "version_string": "GhostWriter {0:s} | https://ghostwriter.sh"
+}
