@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import subprocess
+from subprocess import Popen, PIPE
 
 class Web:
     """
@@ -32,7 +32,7 @@ class Web:
         self.base.log("[GhostWriter][Web]", "__init__", "is_cli={}".format(is_cli))
 
     def start(self):
-        self.lektor = subprocess.Popen(["lektor", "s"], cwd=self.project.folder, start_new_session=True)
+        self.lektor = Popen(["lektor", "s"], cwd=self.project.folder, start_new_session=True, stdout=PIPE, stderr=PIPE)
         self.base.log("[GhostWriter][Web]", "Lektor Start", "pid={}".format(self.lektor.pid))
 
     def status(self):
@@ -40,12 +40,15 @@ class Web:
         errs = None
 
         try:
-            outs, errs = self.lektor.communicate(timeout=15)
-        except TimeoutExpired:
-            lektor.kill()
+            outs, errs = self.lektor.communicate(timeout=3)
+        except Exception as e:
+            self.lektor.kill()
             outs, errs = self.lektor.communicate()
 
         return outs, errs
+
+    def check_output(self):
+        return self.lektor.stdout.readline()
 
     def stop(self):
         self.lektor.terminate()

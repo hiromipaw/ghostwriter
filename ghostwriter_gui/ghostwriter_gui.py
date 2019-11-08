@@ -185,6 +185,10 @@ class GhostWriterGui(QtWidgets.QMainWindow):
             self.base.css["log_container"]
         )
 
+        self.update_lektor_logs = QtCore.QTimer()
+        self.update_lektor_logs.setInterval(50)
+        self.update_lektor_logs.start(50)
+
         # Define tab buttons
         self.lektor_log_button = QtWidgets.QPushButton(strings._('tab_web', True))
         self.lektor_log_button.setFixedHeight(20)
@@ -276,9 +280,14 @@ class GhostWriterGui(QtWidgets.QMainWindow):
     def open_button_clicked(self):
         self.base.log('GhostWriterGui', 'open_button_clicked')
         self.project = Project(self.base)
-        self.web = Web(self.base, self.project, False)
         self.open_project = OpenProject(self.base, self.project, self)
+
+        self.lektor_log_container.setPlainText("{}: {}".format(strings._("open_project", True), self.project.folder))
+
+        self.web = Web(self.base, self.project, False)
         self.web.start()
+
+        self.update_lektor_logs.timeout.connect(self.update_web_logs)
 
     def close_button_clicked(self):
         self.base.log('GhostWriterGui', 'close_button_clicked')
@@ -312,3 +321,6 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def onion_log_button_clicked(self):
         self.base.log('GhostWriterGui', 'onion_log_button_clicked')
+
+    def update_web_logs(self):
+        self.lektor_log_container.appendPlainText(self.web.check_output().decode('utf-8'))

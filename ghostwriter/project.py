@@ -23,16 +23,16 @@ class Project(object):
     A Project is a Lektor project with its configuration.
     """
 
-    def __init__(self, base):
+    def __init__(self, base, master=None, upstream=None, folder=None):
         self.base = base
         self.base.log("[GhostWriter][Project]", "__init__")
 
         # Git options
-        self.master = None
-        self.upstream = None
+        self.master = master
+        self.upstream = upstream
 
         # Lektor options
-        self.folder = None
+        self.folder = folder
 
     def set_master(self, master):
         self.base.log("[GhostWriter][Project]", "set_master", "master={}".format(master))

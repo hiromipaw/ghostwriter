@@ -11,6 +11,7 @@
     "button_rebase": "Rebase",
     "button_onion": ".onion",
     "button_settings": "Settings",
+    "open_project": "Opening Lektor Project",
     "project_status_label": "Project",
     "tab_web": "Web",
     "tab_git": "Git",

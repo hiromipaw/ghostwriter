@@ -41,4 +41,4 @@ class OpenProject():
             options=QtWidgets.QFileDialog.ShowDirsOnly,
         )
         self.project.set_folder(project_folder)
-        self.parent.project_status_label.setText("{}: {}".format(strings._("project_status_label", True), project_folder))
+        self.parent.project_status_label.setText("{}: {}".format(strings._("project_status_label", True), self.project.folder))
