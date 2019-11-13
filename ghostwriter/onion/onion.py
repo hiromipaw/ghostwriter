@@ -35,7 +35,7 @@ class Onion:
         self.base.log("[GhostWriter][Onion]", "__init__", "is_cli={}".format(is_cli))
 
     def start(self):
-        self.onion = Popen(["/home/user/onionshare/dev_scripts/onionshare", "--verbose", "--website", "{}/public".format(self.project.folder)], start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.onion = Popen(["/home/user/onionshare/dev_scripts/onionshare", "--verbose", "--website", "{}/public".format(self.project.folder)], start_new_session=True)
         self.base.log("[GhostWriter][Onion]", "Onion Start", "pid={}".format(self.onion.pid))
 
     def status(self):
@@ -55,4 +55,4 @@ class Onion:
 
     def stop(self):
         self.onion.terminate()
-        self.base.log("[GhostWriter][Web]", "Lektor Stop", "return_code={}".format(self.onion.returncode()))
+        self.base.log("[GhostWriter][Onion]", "Onion Stop", "return_code={}".format(self.onion.returncode()))

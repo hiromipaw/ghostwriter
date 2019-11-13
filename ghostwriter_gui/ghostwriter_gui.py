@@ -184,6 +184,9 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         # Define log boxes
         self.lektor_log_container = QPlainTextEditLogger(self, self.base)
         self.onion_log_container = QPlainTextEditLogger(self, self.base)
+        self.lektor_log_container.widget.show()
+        self.onion_log_container.widget.hide()
+
 
         # Define tab buttons
         self.lektor_log_button = QtWidgets.QPushButton(strings._('tab_web', True))
@@ -308,6 +311,8 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def onion_button_clicked(self):
         self.base.log('GhostWriterGui', 'onion_button_clicked')
+        self.lektor_log_container.widget.hide()
+        self.onion_log_container.widget.show()
         self.onion_log_container.widget.setPlainText("{}: {}".format(strings._("onion_starting", True), self.project.folder))
         self.onion = Onion(self.base, self.project, False, self.onion_log_container)
 
