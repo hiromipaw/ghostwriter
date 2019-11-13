@@ -22,7 +22,7 @@ from subprocess import Popen
 import logging
 import sys
 
-class Onion:
+class OnionShare:
     """
     The Onion object is where GhostWriter runs onion services locally
     """
@@ -35,7 +35,7 @@ class Onion:
         self.base.log("[GhostWriter][Onion]", "__init__", "is_cli={}".format(is_cli))
 
     def start(self):
-        self.onion = Popen(["/home/user/onionshare/dev_scripts/onionshare", "--verbose", "--website", "{}/public".format(self.project.folder)], start_new_session=True)
+        self.onion = Popen(["/home/user/onionshare/dev_scripts/onionshare", "--verbose", "--website", "{}/public".format(self.project.folder)], start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
         self.base.log("[GhostWriter][Onion]", "Onion Start", "pid={}".format(self.onion.pid))
 
     def status(self):
