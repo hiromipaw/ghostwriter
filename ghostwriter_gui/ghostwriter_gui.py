@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from ghostwriter import strings
 from ghostwriter.project import Project
 from ghostwriter.web import Web
+
+from .logs_handler import QPlainTextEditLogger
 from .open_project import OpenProject
 
 from PyQt5 import QtCore, QtWidgets, QtGui
@@ -178,16 +180,9 @@ class GhostWriterGui(QtWidgets.QMainWindow):
             self.base.css["project_status_indicator_label"]
         )
 
-        # Define log box
-        self.lektor_log_container = QtWidgets.QPlainTextEdit("...")
-        self.lektor_log_container.setReadOnly(True)
-        self.lektor_log_container.setStyleSheet(
-            self.base.css["log_container"]
-        )
-
-        self.update_lektor_logs = QtCore.QTimer()
-        self.update_lektor_logs.setInterval(50)
-        self.update_lektor_logs.start(50)
+        # Define log boxes
+        self.lektor_log_container = QPlainTextEditLogger(self, self.base)
+        self.onion_log_container = QPlainTextEditLogger(self, self.base)
 
         # Define tab buttons
         self.lektor_log_button = QtWidgets.QPushButton(strings._('tab_web', True))
@@ -248,8 +243,8 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         project_layout.addWidget(self.project_status_label)
 
         # Add log container to panel
-        log_layout.addWidget(self.lektor_log_container)
-
+        log_layout.addWidget(self.lektor_log_container.widget)
+        log_layout.addWidget(self.onion_log_container.widget)
         # Add tab layout to panel
         tab_layout.addWidget(self.lektor_log_button)
         tab_layout.addWidget(self.git_log_button)
@@ -282,12 +277,15 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         self.project = Project(self.base)
         self.open_project = OpenProject(self.base, self.project, self)
 
-        self.lektor_log_container.setPlainText("{}: {}".format(strings._("open_project", True), self.project.folder))
+        self.lektor_log_container.widget.setPlainText("{}: {}".format(strings._("open_project", True), self.project.folder))
 
-        self.web = Web(self.base, self.project, False)
+        self.web = Web(self.base, self.project, False, self.lektor_log_container)
+
         self.web.start()
 
-        self.update_lektor_logs.timeout.connect(self.update_web_logs)
+        self.lektor_log_container.widget.appendPlainText("{} {}:{}".format(strings._("serve_project", True), self.web.address, self.web.port))
+
+#        self.lektor_log_thread.start()
 
     def close_button_clicked(self):
         self.base.log('GhostWriterGui', 'close_button_clicked')
@@ -315,12 +313,13 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def lektor_log_button_clicked(self):
         self.base.log('GhostWriterGui', 'lektor_log_button_clicked')
+        self.lektor_log_container.widget.show()
+        self.onion_log_container.widget.hide()
 
     def git_log_button_clicked(self):
         self.base.log('GhostWriterGui', 'git_log_button_clicked')
 
     def onion_log_button_clicked(self):
         self.base.log('GhostWriterGui', 'onion_log_button_clicked')
-
-    def update_web_logs(self):
-        self.lektor_log_container.appendPlainText(self.web.check_output().decode('utf-8'))
+        self.lektor_log_container.widget.hide()
+        self.onion_log_container.widget.show()

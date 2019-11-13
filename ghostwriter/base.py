@@ -28,7 +28,7 @@ class Base(object):
     The Base object is shared amongst all parts of Ghostwriter.
     """
 
-    def __init__(self, verbose=False):
+    def __init__(self, verbose=True):
         self.verbose = verbose
 
         # The platform GhostWriter is running on

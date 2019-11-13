@@ -18,44 +18,39 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from subprocess import Popen
+import os, shutil, docker, time
 
-import logging
-import sys
-
-class Web:
+class Onion:
     """
-    The Web object is where GhostWriter runs lektor locally
+    The Onion object is where GhostWriter runs onion services locally
     """
 
     def __init__(self, base, project, is_cli, log_handler):
         self.base = base
         self.log_handler = log_handler
         self.project = project
-        self.lektor = None
-        self.address = "http://127.0.0.1"
-        self.port = "5000"
-        self.base.log("[GhostWriter][Web]", "__init__", "is_cli={}".format(is_cli))
+
+        self.base.log("[GhostWriter][Onion]", "__init__", "is_cli={}".format(is_cli))
 
     def start(self):
-        self.lektor = Popen(["lektor", "s", "-O public"], cwd=self.project.folder, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
-        self.base.log("[GhostWriter][Web]", "Lektor Start", "pid={}".format(self.lektor.pid))
+        self.onion = Popen(["~/onionshare/dev_scripts/onionshare", "--website", "{}/public".format(self.project.folder)], start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.base.log("[GhostWriter][Onion]", "Onion Start", "pid={}".format(self.onion.pid))
 
     def status(self):
         outs = None
         errs = None
 
         try:
-            outs, errs = self.lektor.communicate(timeout=3)
+            outs, errs = self.onion.communicate(timeout=3)
         except Exception as e:
-            self.lektor.kill()
-            outs, errs = self.lektor.communicate()
+            self.onion.kill()
+            outs, errs = self.onion.communicate()
 
         return outs, errs
 
     def check_output(self):
-        return self.lektor.stdout.readline()
+        return self.onion.stdout.readline()
 
     def stop(self):
-        self.lektor.terminate()
-        self.base.log("[GhostWriter][Web]", "Lektor Stop", "return_code={}".format(self.lektor.returncode()))
+        self.onion.terminate()
+        self.base.log("[GhostWriter][Web]", "Lektor Stop", "return_code={}".format(self.onion.returncode()))

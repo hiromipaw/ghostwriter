@@ -13,6 +13,7 @@
     "button_settings": "Settings",
     "open_project": "Opening Lektor Project",
     "project_status_label": "Project",
+    "serve_project": "Project is being served at ",
     "tab_web": "Web",
     "tab_git": "Git",
     "tab_onion": ".onion",
