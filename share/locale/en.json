@@ -12,6 +12,7 @@
     "button_onion": ".onion",
     "button_settings": "Settings",
     "open_project": "Opening Lektor Project",
+    "onion_starting": "Staring OnionShare",
     "project_status_label": "Project",
     "serve_project": "Project is being served at ",
     "tab_web": "Web",

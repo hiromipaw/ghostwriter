@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from ghostwriter import strings
 from ghostwriter.project import Project
 from ghostwriter.web import Web
+from ghostwriter.onion import Onion
 
 from .logs_handler import QPlainTextEditLogger
 from .open_project import OpenProject
@@ -307,6 +308,10 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def onion_button_clicked(self):
         self.base.log('GhostWriterGui', 'onion_button_clicked')
+        self.onion_log_container.widget.setPlainText("{}: {}".format(strings._("onion_starting", True), self.project.folder))
+        self.onion = Onion(self.base, self.project, False, self.onion_log_container)
+
+        self.onion.start()
 
     def settings_button_clicked(self):
         self.base.log('GhostWriterGui', 'settings_button_clicked')
