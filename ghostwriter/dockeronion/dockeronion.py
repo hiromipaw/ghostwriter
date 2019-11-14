@@ -40,6 +40,7 @@ class DockerOnion(object):
         self.base.log("[GhostWriter][Docker]", "Docker Build", "pid={}".format(self.build.pid))
 
     def start(self):
+        # Here we should check that Popen has finished before calling all the other run functions
         self.build()
         self.docker = Popen(["docker", "run", "--name", "website", "-t", "-d", "website"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker Start", "pid={}".format(self.docker.pid))
