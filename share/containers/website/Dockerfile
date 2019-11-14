@@ -4,7 +4,7 @@ MAINTAINER hiro <hiro@torproject.org>
 
 RUN \
     apt-get update && \
-    apt-get install -y nginx tor && \
+    apt-get install -y nginx tor vim && \
     rm -rf /var/lib/apt/lists/* && \
     echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
     chown -R www-data:www-data /var/lib/nginx

@@ -31,24 +31,28 @@ class DockerOnion(object):
     def __init__(self, base, project, containers_path, is_cli, log_handler):
         self.base = base
         self.containers_path = containers_path
+        self.project = project
         self.log_handler = log_handler
         self.base.log("[GhostWriter][Docker]", "__init__", "is_cli={}".format(is_cli))
 
     def build(self):
-        self.build = Popen(["docker", "build", ".", "-t", "website"], cwd=self.containers_path, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.build = Popen(["docker", "build", ".", "-t", "website"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker Build", "pid={}".format(self.build.pid))
 
     def start(self):
         self.build()
-        self.docker = Popen(["docker", "run", "--name", "website", "-t", "-d", "website"], cwd=self.containers_path, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.docker = Popen(["docker", "run", "--name", "website", "-t", "-d", "website"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker Start", "pid={}".format(self.docker.pid))
+        self.run_tor()
+        self.run_web_server()
+        self.get_onionservice_address()
 
     def run_tor(self):
-        self.tor = Popen(["docker", "exec", "-t", "-d", "--user=root", "website", "tor"], cwd=self.containers_path, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.tor = Popen(["docker", "exec", "-t", "-d", "--user=root", "website", "tor"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker run Tor", "pid={}".format(self.tor.pid))
 
     def run_web_server(self):
-        self.nginx = Popen(["docker", "exec", "-t", "-d", "-v", "{}:/var/www/html".format(self.project.folder), "--user=root", "website", "nginx"], cwd=self.containers_path, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.nginx = Popen(["docker", "exec", "-t", "-d", "-v", "{}:/var/www/html".format(self.project.folder), "--user=root", "website", "nginx"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker run Nginx", "pid={}".format(self.nginx.pid))
 
     def get_onionservice_address(self):
