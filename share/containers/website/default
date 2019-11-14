@@ -28,7 +28,7 @@ server {
 	server_name _;
 
 	location / {
-		proxy_pass http://my-onion.glitch.me/;
+		root /var/www/html;
 	}
 
 }

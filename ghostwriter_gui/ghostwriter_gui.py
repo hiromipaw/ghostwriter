@@ -22,6 +22,7 @@ from ghostwriter import strings
 from ghostwriter.project import Project
 from ghostwriter.web import Web
 from ghostwriter.onionshare import OnionShare
+from ghostwriter.dockeronion import DockerOnion
 
 from .logs_handler import QPlainTextEditLogger
 from .open_project import OpenProject
@@ -314,7 +315,8 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         self.lektor_log_container.widget.hide()
         self.onion_log_container.widget.show()
         self.onion_log_container.widget.setPlainText("{}: {}".format(strings._("onion_starting", True), self.project.folder))
-        self.onion = OnionShare(self.base, self.project, False, self.onion_log_container)
+        self.container_path = self.base.get_resource_path('containers/website')
+        self.onion = DockerOnion(self.base, self.project, self.container_path, False, self.onion_log_container)
 
         self.onion.start()
 
