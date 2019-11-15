@@ -38,7 +38,7 @@ class Web:
         self.base.log("[GhostWriter][Web]", "__init__", "is_cli={}".format(is_cli))
 
     def start(self):
-        self.lektor = Popen(["lektor", "s", "-O public"], cwd=self.project.folder, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.lektor = Popen(["lektor", "s", "-O", "public"], cwd=self.project.folder, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
         self.base.log("[GhostWriter][Web]", "Lektor Start", "pid={}".format(self.lektor.pid))
 
     def status(self):

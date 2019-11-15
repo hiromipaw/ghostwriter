@@ -14,7 +14,7 @@ COPY tor/torrc /etc/tor
 COPY default /etc/nginx/sites-available/
 
 # Define mountable directories.
-VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
+VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx"]
 
 # Define working directory.
 WORKDIR /etc/nginx

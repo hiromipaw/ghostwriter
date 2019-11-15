@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from subprocess import Popen
 
 import logging
+import time
 import sys
 
 class DockerOnion(object):
@@ -36,29 +37,35 @@ class DockerOnion(object):
         self.base.log("[GhostWriter][Docker]", "__init__", "is_cli={}".format(is_cli))
 
     def build(self):
-        self.build = Popen(["docker", "build", ".", "-t", "website"], cwd=self.containers_path, start_new_session=True)
-        self.base.log("[GhostWriter][Docker]", "Docker Build", "pid={}".format(self.build.pid))
+        self.build_docker = Popen(["docker", "build", ".", "-t", "website"], cwd=self.containers_path, start_new_session=True)
+        self.base.log("[GhostWriter][Docker]", "Docker Build", "pid={}".format(self.build_docker.pid))
+        self.build_docker.wait()
 
     def start(self):
         # Here we should check that Popen has finished before calling all the other run functions
         self.build()
-        self.docker = Popen(["docker", "run", "--name", "website", "-t", "-d", "website"], cwd=self.containers_path, start_new_session=True)
+        self.docker = Popen(["docker", "run", "-v", "{}/public:/var/www/html".format(self.project.folder), "--name", "website", "-t", "-d", "website"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker Start", "pid={}".format(self.docker.pid))
+        self.docker.wait()
         self.run_tor()
         self.run_web_server()
+        time.sleep(.5000)
         self.get_onionservice_address()
 
     def run_tor(self):
         self.tor = Popen(["docker", "exec", "-t", "-d", "--user=root", "website", "tor"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker run Tor", "pid={}".format(self.tor.pid))
+        self.tor.wait()
 
     def run_web_server(self):
-        self.nginx = Popen(["docker", "exec", "-t", "-d", "-v", "{}:/var/www/html".format(self.project.folder), "--user=root", "website", "nginx"], cwd=self.containers_path, start_new_session=True)
+        self.nginx = Popen(["docker", "exec", "-t", "-d", "--user=root", "website", "nginx"], cwd=self.containers_path, start_new_session=True)
         self.base.log("[GhostWriter][Docker]", "Docker run Nginx", "pid={}".format(self.nginx.pid))
+        self.nginx.wait()
 
     def get_onionservice_address(self):
-        self.onion = Popen(["docker", "exec", "-t", "-d", "--user=root", "website", "cat /home/peer/onion_web_service/hostname"], cwd=self.containers_path, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
+        self.onion = Popen(["docker", "exec", "-t", "--user=root", "website", "sh -c \'cat onion_web_service/hostname\'"], cwd=self.containers_path, start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
         self.base.log("[GhostWriter][Docker]", "Docker get onion service address", "pid={}".format(self.onion.pid))
+        self.onion.wait()
 
     def status(self):
         outs = None
