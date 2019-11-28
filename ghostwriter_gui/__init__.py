@@ -55,6 +55,7 @@ def main():
     """
     base = Base()
     base.define_css()
+    config = False
 
     strings.load_strings(base)
     print(strings._('version_string').format(base.version))
@@ -68,7 +69,7 @@ def main():
     qtapp = Application(base)
 
     # Launch the gui
-    gui = GhostWriterGui(base, qtapp)
+    gui = GhostWriterGui(base, qtapp, config)
 
     # Clean up when app quits
     def shutdown():

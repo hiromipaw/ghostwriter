@@ -22,6 +22,7 @@ import os
 from PyQt5 import QtCore, QtWidgets, QtGui
 
 from ghostwriter import strings
+from ghostwriter.settings import Settings
 
 
 class OpenProject():
@@ -29,11 +30,16 @@ class OpenProject():
     Open a lektor project into the GUI
     """
 
-    def __init__(self, base, project, parent):
+    def __init__(self, base, project, parent, config=False):
 
         self.base = base
         self.project = project
         self.parent = parent
+        self.config = config
+
+        self.old_settings = Settings(self.base, self.config)
+        self.old_settings.load()
+
 
         project_folder = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent,
@@ -41,4 +47,13 @@ class OpenProject():
             options=QtWidgets.QFileDialog.ShowDirsOnly,
         )
         self.project.set_folder(project_folder)
-        self.parent.project_status_label.setText("{}: {}".format(strings._("project_status_label", True), self.project.folder))
+        project_status = "{}: {}".format(strings._("project_status_label", True), self.project.folder)
+        self.parent.project_layout.set_project_label(project_status)
+
+        if (self.old_settings.get("project_folder") != project_folder):
+            settings = Settings(self.base, self.config)
+
+            settings.set(
+                "project_folder", project_folder
+            )
+            settings.save()

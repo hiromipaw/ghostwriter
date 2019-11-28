@@ -58,4 +58,4 @@ class Web:
 
     def stop(self):
         self.lektor.terminate()
-        self.base.log("[GhostWriter][Web]", "Lektor Stop", "return_code={}".format(self.lektor.returncode()))
+        self.base.log("[GhostWriter][Web]", "Lektor Stop")

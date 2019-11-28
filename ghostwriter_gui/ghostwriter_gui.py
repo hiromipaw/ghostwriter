@@ -18,16 +18,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from ghostwriter import strings
+from ghostwriter import strings, base
+
+from ghostwriter.dockeronion import DockerOnion
+from ghostwriter.onionshare import OnionShare
 from ghostwriter.project import Project
 from ghostwriter.web import Web
-from ghostwriter.onionshare import OnionShare
-from ghostwriter.dockeronion import DockerOnion
 
-from .logs_handler import QPlainTextEditLogger
+
+from .logs_layout import LogsLayout
+from .menu_layout import MenuLayout
 from .open_project import OpenProject
+from .project_layout import ProjectLayout
+from .settings_panel import SettingsPanel
+
 
 from PyQt5 import QtCore, QtWidgets, QtGui
+import webbrowser
 
 class GhostWriterGui(QtWidgets.QMainWindow):
     """
@@ -35,13 +42,20 @@ class GhostWriterGui(QtWidgets.QMainWindow):
     GUI elements.
     """
 
-    def __init__(self, base, qtapp):
+    def __init__(self, base, qtapp, config=False):
         super(GhostWriterGui, self).__init__()
 
         self.qtapp = qtapp
         self.base = base
 
-        self.base.log("GhostWriterGui", "__init__")
+        self.base.log("[GhostWriterGui]", "__init__")
+
+        # Load settings, if a custom config was passed in
+        self.config = config
+        if self.config:
+            self.base.load_settings(self.config)
+        else:
+            self.base.load_settings()
 
         self.setMinimumWidth(820)
         self.setMinimumHeight(660)
@@ -54,6 +68,7 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         # System tray
         menu = QtWidgets.QMenu()
         self.settings_action = menu.addAction(strings._('gui_settings_window_title', True))
+        self.settings_action.triggered.connect(self.open_settings)
         exit_action = menu.addAction(strings._('systray_menu_exit', True))
         exit_action.triggered.connect(self.close)
 
@@ -66,272 +81,126 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         self.system_tray.setContextMenu(menu)
         self.system_tray.show()
 
-        # Define menu buttons and labels
-
-        self.open_label = QtWidgets.QLabel(strings._('button_open', True))
-        self.open_label.setStyleSheet(self.base.css["menu_label"])
-        self.open_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.open_label.setFixedHeight(50)
-        self.open_button = QtWidgets.QPushButton();
-        self.open_button.setFixedHeight(50)
-        self.open_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/folder-3x.png"))
-        )
-        self.open_button.setStyleSheet(self.base.css["menu_button"])
-        self.open_button.clicked.connect(self.open_button_clicked)
-
-        self.close_label = QtWidgets.QLabel(strings._('button_close', True))
-        self.close_label.setStyleSheet(self.base.css["menu_label"])
-        self.close_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.close_label.setFixedHeight(50)
-        self.close_button = QtWidgets.QPushButton();
-        self.close_button.setFixedHeight(50)
-        self.close_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/x-3x.png"))
-        )
-        self.close_button.setStyleSheet(self.base.css["menu_button"])
-        self.close_button.clicked.connect(self.close_button_clicked)
-
-        self.view_label = QtWidgets.QLabel(strings._('button_view', True))
-        self.view_label.setStyleSheet(self.base.css["menu_label"])
-        self.view_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.view_label.setFixedHeight(50)
-        self.view_button = QtWidgets.QPushButton();
-        self.view_button.setFixedHeight(50)
-        self.view_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/eye-3x.png"))
-        )
-        self.view_button.setStyleSheet(self.base.css["menu_button"])
-        self.view_button.clicked.connect(self.view_button_clicked)
-
-        self.edit_label = QtWidgets.QLabel(strings._('button_edit', True))
-        self.edit_label.setStyleSheet(self.base.css["menu_label"])
-        self.edit_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.edit_label.setFixedHeight(50)
-        self.edit_button = QtWidgets.QPushButton();
-        self.edit_button.setFixedHeight(50)
-        self.edit_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/pencil-3x.png"))
-        )
-        self.edit_button.setStyleSheet(self.base.css["menu_button"])
-        self.edit_button.clicked.connect(self.edit_button_clicked)
-
-        self.push_label = QtWidgets.QLabel(strings._('button_push', True))
-        self.push_label.setStyleSheet(self.base.css["menu_label"])
-        self.push_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.push_button = QtWidgets.QPushButton();
-        self.push_button.setFixedHeight(50)
-        self.push_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/data-transfer-upload-3x.png"))
-        )
-        self.push_button.setStyleSheet(self.base.css["menu_button"])
-        self.push_button.clicked.connect(self.push_button_clicked)
-
-        self.sync_label = QtWidgets.QLabel(strings._('button_sync', True))
-        self.sync_label.setStyleSheet(self.base.css["menu_label"])
-        self.sync_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.sync_label.setFixedHeight(50)
-        self.sync_button = QtWidgets.QPushButton();
-        self.sync_button.setFixedHeight(50)
-        self.sync_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/reload-3x.png"))
-        )
-        self.sync_button.setStyleSheet(self.base.css["menu_button"])
-        self.sync_button.clicked.connect(self.sync_button_clicked)
-
-        self.rebase_label = QtWidgets.QLabel(strings._('button_rebase', True))
-        self.rebase_label.setStyleSheet(self.base.css["menu_label"])
-        self.rebase_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.rebase_label.setFixedHeight(50)
-        self.rebase_button = QtWidgets.QPushButton();
-        self.rebase_button.setFixedHeight(50)
-        self.rebase_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/fork-3x.png"))
-        )
-        self.rebase_button.setStyleSheet(self.base.css["menu_button"])
-        self.rebase_button.clicked.connect(self.rebase_button_clicked)
-
-        self.onion_label = QtWidgets.QLabel(strings._('button_onion', True))
-        self.onion_label.setStyleSheet(self.base.css["menu_label"])
-        self.onion_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.onion_label.setFixedHeight(50)
-        self.onion_button = QtWidgets.QPushButton();
-        self.onion_button.setFixedHeight(50)
-        self.onion_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/shield-3x.png"))
-        )
-        self.onion_button.setStyleSheet(self.base.css["menu_button"])
-        self.onion_button.clicked.connect(self.onion_button_clicked)
-
-        self.settings_label = QtWidgets.QLabel(strings._('button_settings', True))
-        self.settings_label.setStyleSheet(self.base.css["menu_label"])
-        self.settings_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.settings_label.setFixedHeight(50)
-        self.settings_button = QtWidgets.QPushButton();
-        self.settings_button.setFixedHeight(50)
-        self.settings_button.setIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/icons/cog-3x.png"))
-        )
-        self.settings_button.setStyleSheet(self.base.css["menu_button"])
-        self.settings_button.clicked.connect(self.settings_button_clicked)
-
-        # Define project status box
-        self.project_status_label = QtWidgets.QLabel("{}: ".format(strings._('project_status_label', True)))
-        self.project_status_label.setFixedHeight(50)
-        self.project_status_label.setStyleSheet(
-            self.base.css["project_status_indicator_label"]
-        )
-
-        # Define log boxes
-        self.lektor_log_container = QPlainTextEditLogger(self, self.base)
-        self.onion_log_container = QPlainTextEditLogger(self, self.base)
-        self.lektor_log_container.widget.show()
-        self.onion_log_container.widget.hide()
-
-
-        # Define tab buttons
-        self.lektor_log_button = QtWidgets.QPushButton(strings._('tab_web', True))
-        self.lektor_log_button.setFixedHeight(20)
-        self.lektor_log_button.setStyleSheet(self.base.css["tab_button"])
-        self.lektor_log_button.clicked.connect(self.lektor_log_button_clicked)
-
-        self.git_log_button = QtWidgets.QPushButton(strings._('tab_git', True))
-        self.git_log_button.setFixedHeight(20)
-        self.git_log_button.setStyleSheet(self.base.css["tab_button"])
-        self.git_log_button.clicked.connect(self.git_log_button_clicked)
-
-        self.onion_log_button = QtWidgets.QPushButton(strings._('tab_onion', True))
-        self.onion_log_button.setFixedHeight(20)
-        self.onion_log_button.setStyleSheet(self.base.css["tab_button"])
-        self.onion_log_button.clicked.connect(self.onion_log_button_clicked)
-
-        # Define menu panel
-        labels_layout = QtWidgets.QHBoxLayout()
-        labels_layout.setSpacing(0)
-        labels_layout.setContentsMargins(0, 0, 0, 0)
-        panel_layout = QtWidgets.QHBoxLayout()
-        panel_layout.setSpacing(0)
-        labels_layout.setContentsMargins(0, 0, 0, 0)
-        project_layout = QtWidgets.QHBoxLayout()
-        project_layout.setSpacing(0)
-        labels_layout.setContentsMargins(0, 0, 0, 0)
-        log_layout = QtWidgets.QHBoxLayout()
-        log_layout.setSpacing(0)
-        labels_layout.setContentsMargins(0, 0, 0, 0)
-        tab_layout = QtWidgets.QHBoxLayout()
-        tab_layout.setSpacing(0)
-        labels_layout.setContentsMargins(0, 0, 0, 0)
-
-        # Add labels to panel
-        labels_layout.addWidget(self.open_label)
-        labels_layout.addWidget(self.close_label)
-        labels_layout.addWidget(self.view_label)
-        labels_layout.addWidget(self.edit_label)
-        labels_layout.addWidget(self.push_label)
-        labels_layout.addWidget(self.sync_label)
-        labels_layout.addWidget(self.rebase_label)
-        labels_layout.addWidget(self.onion_label)
-        labels_layout.addWidget(self.settings_label)
-
-        # Add buttons to panel
-        panel_layout.addWidget(self.open_button)
-        panel_layout.addWidget(self.close_button)
-        panel_layout.addWidget(self.view_button)
-        panel_layout.addWidget(self.edit_button)
-        panel_layout.addWidget(self.push_button)
-        panel_layout.addWidget(self.sync_button)
-        panel_layout.addWidget(self.rebase_button)
-        panel_layout.addWidget(self.onion_button)
-        panel_layout.addWidget(self.settings_button)
-
-        # Add project status to panel
-        project_layout.addWidget(self.project_status_label)
-
-        # Add log container to panel
-        log_layout.addWidget(self.lektor_log_container.widget)
-        log_layout.addWidget(self.onion_log_container.widget)
-        # Add tab layout to panel
-        tab_layout.addWidget(self.lektor_log_button)
-        tab_layout.addWidget(self.git_log_button)
-        tab_layout.addWidget(self.onion_log_button)
-
         # Create layout
-        layout = QtWidgets.QVBoxLayout()
-        layout.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
+        self.layout = QtWidgets.QVBoxLayout()
+        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
-        # Add panel to layout
-        layout.addLayout(labels_layout)
-        layout.addLayout(panel_layout)
-        layout.addLayout(project_layout)
-        layout.addLayout(log_layout)
-        layout.addLayout(tab_layout)
+        self.menu_layout = MenuLayout(self.base, self.layout, self)
+        self.logs_layout = LogsLayout(self.base, self.layout, self)
+        self.project_layout = ProjectLayout(self.base, self.layout, self)
 
         # Create widget
         central_widget = QtWidgets.QWidget()
 
         # Add layout
-        central_widget.setLayout(layout)
+        central_widget.setLayout(self.layout)
         central_widget.setContentsMargins(0, 0, 0, 0)
         self.setCentralWidget(central_widget)
 
         self.show()
 
+
     def open_button_clicked(self):
-        self.base.log('GhostWriterGui', 'open_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Open button clicked')
         self.project = Project(self.base)
-        self.open_project = OpenProject(self.base, self.project, self)
+        self.open_project = OpenProject(self.base, self.project, self, self.config)
+        self.start_web()
 
-        self.lektor_log_container.widget.setPlainText("{}: {}".format(strings._("open_project", True), self.project.folder))
 
-        self.web = Web(self.base, self.project, False, self.lektor_log_container)
+    def set_project(self, project_folder):
+        self.project = Project(self.base)
+        self.project.set_folder(project_folder)
 
+    def clean_project(self):
+        self.project = None
+
+        self.base.settings.set(
+            "project_folder", ""
+        )
+        self.base.settings.set(
+            "upstream_git_repository", ""
+        )
+        self.base.settings.set(
+            "git_repository", ""
+        )
+
+        self.base.settings.save()
+        self.project_layout.set_project_label("")
+        self.logs_layout.reset_lektor_log_container("Project closed.")
+
+
+    def start_web(self):
+        project_label = "{} {}".format(strings._("open_project", True), self.project.folder)
+        self.logs_layout.reset_lektor_log_container(project_label)
+        self.web = Web(self.base, self.project, False, self.logs_layout.lektor_log_container)
         self.web.start()
+        self.logs_layout.append_lektor_log_container("{} {}:{}".format(strings._("serve_project", True), self.web.address, self.web.port))
 
-        self.lektor_log_container.widget.appendPlainText("{} {}:{}".format(strings._("serve_project", True), self.web.address, self.web.port))
-
-#        self.lektor_log_thread.start()
 
     def close_button_clicked(self):
-        self.base.log('GhostWriterGui', 'close_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Close button clicked')
+        self.web.stop()
+        self.clean_project()
+
 
     def view_button_clicked(self):
-        self.base.log('GhostWriterGui', 'view_button_clicked')
+        self.base.log('[GhostWriterGui]', 'View button clicked')
+        webbrowser.open('http://localhost:5000')
 
     def edit_button_clicked(self):
-        self.base.log('GhostWriterGui', 'edit_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Edit button clicked')
+        webbrowser.open('http://localhost:5000/admin/root%2Ben/edit')
+
 
     def push_button_clicked(self):
-        self.base.log('GhostWriterGui', 'push_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Push button clicked')
+
 
     def sync_button_clicked(self):
-        self.base.log('GhostWriterGui', 'sync_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Sync button clicked')
+
 
     def rebase_button_clicked(self):
-        self.base.log('GhostWriterGui', 'rebase_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Rebase_button_clicked')
+
 
     def onion_button_clicked(self):
-        self.base.log('GhostWriterGui', 'onion_button_clicked')
-        self.lektor_log_container.widget.hide()
-        self.onion_log_container.widget.show()
-        self.onion_log_container.widget.setPlainText("{}: {}".format(strings._("onion_starting", True), self.project.folder))
+        self.base.log('[GhostWriterGui]', 'Onion button clicked')
+        self.logs_layout.hide_lektor_log_container()
+
+        self.logs_layout.reset_onion_log_container("{}: {}".format(strings._("onion_starting", True), self.project.folder))
         self.container_path = self.base.get_resource_path('containers/website')
-        self.onion = DockerOnion(self.base, self.project, self.container_path, False, self.onion_log_container)
+        self.onion = DockerOnion(self.base, self.project, self.container_path, False, self.logs_layout.onion_log_container)
 
         self.onion.start()
 
+
     def settings_button_clicked(self):
-        self.base.log('GhostWriterGui', 'settings_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Settings button clicked')
+        self.open_settings()
+
+
+    def open_settings(self):
+        self.base.log('[GhostWriterGui]', 'Open settings panel')
+
+        def reload_settings():
+            self.base.log('[GhostWriterGui]', 'Settings have changed')
+
+        p = SettingsPanel(self.base, self.qtapp, self.layout, self.config)
+        p.settings_saved.connect(reload_settings)
+        p.exec_()
+
 
     def lektor_log_button_clicked(self):
-        self.base.log('GhostWriterGui', 'lektor_log_button_clicked')
-        self.lektor_log_container.widget.show()
-        self.onion_log_container.widget.hide()
+        self.base.log('[GhostWriterGui]', 'Lektor logs button clicked')
+        self.logs_layout.show_lektor_log_container()
+
 
     def git_log_button_clicked(self):
-        self.base.log('GhostWriterGui', 'git_log_button_clicked')
+        self.base.log('[GhostWriterGui]', 'Git logs button clicked')
+
 
     def onion_log_button_clicked(self):
-        self.base.log('GhostWriterGui', 'onion_log_button_clicked')
-        self.lektor_log_container.widget.hide()
-        self.onion_log_container.widget.show()
+        self.base.log('[GhostWriterGui]', 'Onion logs button clicked')
+        self.logs_layout.show_onion_log_container()
