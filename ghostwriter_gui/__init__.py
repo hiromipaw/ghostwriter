@@ -74,6 +74,7 @@ def main():
     # Clean up when app quits
     def shutdown():
         print("Shutting down")
+        gui.stop()
 
     qtapp.aboutToQuit.connect(shutdown)
 

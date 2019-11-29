@@ -43,8 +43,10 @@ class LogsLayout():
         # Define log boxes
         self.lektor_log_container = QPlainTextEditLogger(main_window, self.base)
         self.onion_log_container = QPlainTextEditLogger(main_window, self.base)
+        self.git_log_container = QPlainTextEditLogger(main_window, self.base)
         self.lektor_log_container.widget.show()
         self.onion_log_container.widget.hide()
+        self.git_log_container.widget.hide()
 
         # Define tab buttons
         self.lektor_log_button = QtWidgets.QPushButton(strings._('tab_web', True))
@@ -65,6 +67,8 @@ class LogsLayout():
         # Add log container to panel
         self.log_layout.addWidget(self.lektor_log_container.widget)
         self.log_layout.addWidget(self.onion_log_container.widget)
+        self.log_layout.addWidget(self.git_log_container.widget)
+
         # Add tab layout to panel
         self.tab_layout.addWidget(self.lektor_log_button)
         self.tab_layout.addWidget(self.git_log_button)
@@ -91,17 +95,36 @@ class LogsLayout():
 
 
     def append_onion_log_container(self, text):
-        self.base.log('[GhostWriterGui][LogsLayout]', 'Apend onion log container')
+        self.base.log('[GhostWriterGui][LogsLayout]', 'Append onion log container')
         self.onion_log_container.widget.appendPlainText(text)
+
+
+    def reset_git_log_container(self, text):
+        self.base.log('[GhostWriterGui][LogsLayout]', 'Reset git log container')
+        self.git_log_container.widget.setPlainText(text)
+
+
+    def append_git_log_container(self, text):
+        self.base.log('[GhostWriterGui][LogsLayout]', 'Append git log container')
+        self.git_log_container.widget.appendPlainText(text)
 
 
     def show_onion_log_container(self):
         self.base.log('[GhostWriterGui][LogsLayout]', 'Show onion log container')
         self.lektor_log_container.widget.hide()
+        self.git_log_container.widget.hide()
         self.onion_log_container.widget.show()
+
+
+    def show_git_log_container(self):
+        self.base.log('[GhostWriterGui][LogsLayout]', 'Show git log container')
+        self.lektor_log_container.widget.hide()
+        self.onion_log_container.widget.hide()
+        self.git_log_container.widget.show()
 
 
     def show_lektor_log_container(self):
         self.base.log('[GhostWriterGui][LogsLayout]', 'Show lektor log container')
         self.lektor_log_container.widget.show()
         self.onion_log_container.widget.hide()
+        self.git_log_container.widget.hide()

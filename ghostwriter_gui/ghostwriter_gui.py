@@ -34,6 +34,8 @@ from .settings_panel import SettingsPanel
 
 
 from PyQt5 import QtCore, QtWidgets, QtGui
+
+import git
 import webbrowser
 
 class GhostWriterGui(QtWidgets.QMainWindow):
@@ -112,6 +114,15 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         self.project = Project(self.base)
         self.project.set_folder(project_folder)
 
+        repository = self.base.settings.get("git_repository")
+        if repository:
+            self.project.set_master = repository
+
+        upstream_repository = self.base.settings.get("upstream_git_repository")
+        if upstream_repository:
+            self.project.set_upstream = upstream_repository
+
+
     def clean_project(self):
         self.project = None
 
@@ -148,6 +159,7 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         self.base.log('[GhostWriterGui]', 'View button clicked')
         webbrowser.open('http://localhost:5000')
 
+
     def edit_button_clicked(self):
         self.base.log('[GhostWriterGui]', 'Edit button clicked')
         webbrowser.open('http://localhost:5000/admin/root%2Ben/edit')
@@ -155,14 +167,51 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def push_button_clicked(self):
         self.base.log('[GhostWriterGui]', 'Push button clicked')
+        self.base.settings.load()
+        repository = self.base.settings.get("git_repository")
+        if repository:
+            try:
+
+                repo = git.Repo(self.project.folder)
+                index = repo.index
+                index.add([repo.working_tree_dir])
+                author = Actor("GhostWriter App", "info@ghostwriter.sh")
+                committer = Actor("GhostWriter App", "info@ghostwriter.sh")
+                # commit by commit message and author and committer
+                index.commit("add changes from ghostwriter app", author=author, committer=committer)
+                git.remotes.origin.push()
+                self.logs_layout.append_git_log_container("Pushed changes to {}".format(repository))
+            except Exception as e:
+                self.logs_layout.append_git_log_container(e)
+        else:
+            self.logs_layout.append_git_log_container("Have you setup a git repository for this project?")
 
 
     def sync_button_clicked(self):
         self.base.log('[GhostWriterGui]', 'Sync button clicked')
+        self.base.settings.load()
+        repository = self.base.settings.get("git_repository")
+        if repository:
+            self.logs_layout.append_git_log_container("Syncing repository {} ... ".format(repository))
+            try:
+                repo = git.Repo(self.project.folder)
+                repo.remotes.origin.pull()
+                self.logs_layout.append_git_log_container("Pulled changes from {}".format(repository))
+            except Exception as e:
+                self.logs_layout.append_git_log_container(e)
 
 
     def rebase_button_clicked(self):
         self.base.log('[GhostWriterGui]', 'Rebase_button_clicked')
+        upstream = self.base.settings.get("upstream_git_repository")
+        if upstream:
+            self.logs_layout.append_git_log_container("Syncing upstream repository {} ... ".format(upstream))
+            try:
+                repo = git.Repo(self.project.folder)
+                repo.remotes.upstream.pull('master')
+                self.logs_layout.append_git_log_container("Pulled changes from {}".format(upstream))
+            except Exception as e:
+                self.logs_layout.append_git_log_container(e)
 
 
     def onion_button_clicked(self):
@@ -199,8 +248,13 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def git_log_button_clicked(self):
         self.base.log('[GhostWriterGui]', 'Git logs button clicked')
+        self.logs_layout.show_git_log_container()
 
 
     def onion_log_button_clicked(self):
         self.base.log('[GhostWriterGui]', 'Onion logs button clicked')
         self.logs_layout.show_onion_log_container()
+
+
+    def stop(self):
+        self.web.stop()

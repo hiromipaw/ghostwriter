@@ -47,7 +47,7 @@ class ProjectLayout():
         self.layout.addLayout(self.project_layout)
 
         project_folder = self.base.settings.get("project_folder")
-        if project_folder != "":
+        if project_folder:
             self.set_project_label(project_folder)
             self.main_window.set_project(project_folder)
             self.main_window.start_web()

@@ -24,6 +24,8 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 from ghostwriter import strings
 from ghostwriter.settings import Settings
 
+import git
+
 
 class OpenProject():
     """
@@ -37,8 +39,8 @@ class OpenProject():
         self.parent = parent
         self.config = config
 
-        self.old_settings = Settings(self.base, self.config)
-        self.old_settings.load()
+        self.current_settings = Settings(self.base, self.config)
+        self.current_settings.load()
 
 
         project_folder = QtWidgets.QFileDialog.getExistingDirectory(
@@ -50,10 +52,30 @@ class OpenProject():
         project_status = "{}: {}".format(strings._("project_status_label", True), self.project.folder)
         self.parent.project_layout.set_project_label(project_status)
 
-        if (self.old_settings.get("project_folder") != project_folder):
+        if (self.current_settings.get("project_folder") != project_folder):
             settings = Settings(self.base, self.config)
 
             settings.set(
                 "project_folder", project_folder
             )
             settings.save()
+            self.current_settings.load()
+
+        try:
+            repo = git.Repo(self.project.folder)
+            self.current_settings.set(
+                "git_repository", repo.remotes.origin.url
+            )
+
+            self.project.set_master =  repo.remotes.origin.url
+
+            self.current_settings.set(
+                "upstream_git_repository", repo.remotes.upstream.url
+            )
+
+            self.project.set_upstream =  repo.remotes.upstream.url
+
+            self.current_settings.save()
+
+        except Exception as e:
+            parent.logs_layout.append_git_log_container(e)

@@ -63,7 +63,11 @@ class SettingsPanel(QtWidgets.QDialog):
         self.upstream_git_repository_label.setStyleSheet(self.base.css["settings_label"])
         self.upstream_git_repository_label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        self.upstream_git_repository_field = QtWidgets.QLineEdit();
+        self.upstream_git_repository_field = QtWidgets.QLineEdit(
+            self.old_settings.get(
+                "upstream_git_repository"
+            )
+        );
 
         self.upstream_git_layout = QtWidgets.QHBoxLayout()
         self.upstream_git_layout.setSpacing(0)
@@ -76,7 +80,11 @@ class SettingsPanel(QtWidgets.QDialog):
         self.git_repository_label.setStyleSheet(self.base.css["settings_label"])
         self.git_repository_label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        self.git_repository_field = QtWidgets.QLineEdit();
+        self.git_repository_field = QtWidgets.QLineEdit(
+            self.old_settings.get(
+                "git_repository"
+            )
+        );
 
         self.git_layout = QtWidgets.QHBoxLayout()
         self.git_layout.addWidget(self.git_repository_label)
@@ -87,7 +95,6 @@ class SettingsPanel(QtWidgets.QDialog):
         self.onion_method_label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
         self.onion_radio_button = QtWidgets.QRadioButton("OnionShare")
-        self.onion_radio_button.setChecked(True)
         self.onion_radio_button.share = "OnionShare"
         self.onion_radio_button.toggled.connect(self.radio_clicked)
 
@@ -95,6 +102,11 @@ class SettingsPanel(QtWidgets.QDialog):
         self.docker_radio_button.share = "Docker"
         self.docker_radio_button.toggled.connect(self.radio_clicked)
 
+        if self.old_settings.get("onion_share_method") == "docker":
+            self.docker_radio_button.setChecked(True)
+        else:
+            self.onion_radio_button.setChecked(True)
+            
         self.radio_layout = QtWidgets.QHBoxLayout()
         self.radio_layout.addWidget(self.onion_method_label)
         self.radio_layout.addWidget(self.onion_radio_button)
