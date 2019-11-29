@@ -69,7 +69,7 @@ class Settings(object):
             "git_repository": "",
             "upstream_git_repository": "",
             "project_folder": "",
-            "onion_share_method": "docker",
+            "onion_share_method": "onionshare",
             "locale": None,  # this gets defined in fill_in_defaults()
         }
         self._settings = {}

@@ -218,11 +218,14 @@ class GhostWriterGui(QtWidgets.QMainWindow):
         self.base.log('[GhostWriterGui]', 'Onion button clicked')
         self.logs_layout.hide_lektor_log_container()
 
-        self.logs_layout.reset_onion_log_container("{}: {}".format(strings._("onion_starting", True), self.project.folder))
-        self.container_path = self.base.get_resource_path('containers/website')
-        self.onion = DockerOnion(self.base, self.project, self.container_path, False, self.logs_layout.onion_log_container)
-
-        self.onion.start()
+        if self.base.settings.get("onion_share_method") == "docker"):
+            self.logs_layout.reset_onion_log_container("{}: {}".format(strings._("onion_starting", True), self.project.folder))
+            self.container_path = self.base.get_resource_path('containers/website')
+            self.onion = DockerOnion(self.base, self.project, self.container_path, False, self.logs_layout.onion_log_container)
+            self.onion.start()
+        else:
+            self.onion = OnionShare(self.base, self.project, self.container_path, False, self.logs_layout.onion_log_container)
+            self.onion.start()
 
 
     def settings_button_clicked(self):
@@ -258,3 +261,4 @@ class GhostWriterGui(QtWidgets.QMainWindow):
 
     def stop(self):
         self.web.stop()
+        self.onion.stop()
