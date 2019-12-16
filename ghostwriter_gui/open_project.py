@@ -63,19 +63,20 @@ class OpenProject():
 
         try:
             repo = git.Repo(self.project.folder)
-            self.current_settings.set(
-                "git_repository", repo.remotes.origin.url
-            )
-
-            self.project.set_master =  repo.remotes.origin.url
-
-            self.current_settings.set(
-                "upstream_git_repository", repo.remotes.upstream.url
-            )
-
-            self.project.set_upstream =  repo.remotes.upstream.url
-
-            self.current_settings.save()
 
         except Exception as e:
             parent.logs_layout.append_git_log_container(e)
+
+        self.current_settings.set(
+            "git_repository", repo.remotes.origin.url
+        )
+
+        self.project.set_master =  repo.remotes.origin.url
+
+        self.current_settings.set(
+            "upstream_git_repository", repo.remotes.upstream.url
+        )
+
+        self.project.set_upstream =  repo.remotes.upstream.url
+
+        self.current_settings.save()

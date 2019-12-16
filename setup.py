@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os, sys, platform, tempfile
+import os, sys, platform, setuptools, tempfile
 from distutils.core import setup
 
 
@@ -65,7 +65,7 @@ license = "GPL v3"
 keywords = "lektor, website, docker, container, ghostwriter, onionshare, onion, tor, anonymous, web server"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Topic :: Communications :: Website",
+    "Topic :: Software Development",
     "Topic :: Security :: Cryptography",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Intended Audience :: End Users/Desktop",
@@ -73,30 +73,12 @@ classifiers = [
     "Environment :: Web Environment",
 ]
 data_files = [
-    (
-        os.path.join(sys.prefix, "share/applications"),
-        ["install/org.ghostwriter.GhostWriter.desktop"],
-    ),
-    (
-        os.path.join(sys.prefix, "share/icons/hicolor/scalable/apps"),
-        ["install/org.ghostwriter.GhostWriter.svg"],
-    ),
-    (
-        os.path.join(sys.prefix, "share/metainfo"),
-        ["install/org.ghostwriter.GhostWriter.appdata.xml"],
-    ),
     (os.path.join(sys.prefix, "share/ghostwriter"), file_list("share")),
     (os.path.join(sys.prefix, "share/ghostwriter/containers"), file_list("share/locale")),
     (os.path.join(sys.prefix, "share/ghostwriter/images"), file_list("share/images")),
     (os.path.join(sys.prefix, "share/ghostwriter/locale"), file_list("share/locale")),
 ]
-if not platform.system().endswith("BSD") and platform.system() != "DragonFly":
-    data_files.append(
-        (
-            "/usr/share/nautilus-python/extensions/",
-            ["install/scripts/ghostwriter-nautilus.py"],
-        )
-    )
+
 
 setup(
     name="ghostwriter",

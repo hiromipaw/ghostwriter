@@ -35,24 +35,24 @@ class OnionShare:
         self.base.log("[GhostWriter][Onion]", "__init__", "is_cli={}".format(is_cli))
 
     def start(self):
-        self.onion = Popen(["onionshare", "--verbose", "--website", "{}/public".format(self.project.folder)], start_new_session=True, stdout=self.log_handler, stderr=self.log_handler)
-        self.base.log("[GhostWriter][Onion]", "Onion Start", "pid={}".format(self.onion.pid))
+        self.share = Popen(["onionshare", "--verbose", "--website", "{}/public".format(self.project.folder)], start_new_session=True)
+        self.base.log("[GhostWriter][Onion]", "Onion Start", "pid={}".format(self.share.pid))
 
     def status(self):
         outs = None
         errs = None
 
         try:
-            outs, errs = self.onion.communicate(timeout=3)
+            outs, errs = self.share.communicate(timeout=3)
         except Exception as e:
-            self.onion.kill()
-            outs, errs = self.onion.communicate()
+            self.share.kill()
+            outs, errs = self.share.communicate()
 
         return outs, errs
 
     def check_output(self):
-        return self.onion.stdout.readline()
+        return self.share.stdout.readline()
 
     def stop(self):
-        self.onion.terminate()
-        self.base.log("[GhostWriter][Onion]", "Onion Stop", "return_code={}".format(self.onion.returncode()))
+        self.share.terminate()
+        self.base.log("[GhostWriter][Onion]", "Onion Stop", "return_code={}".format(self.share.returncode()))
