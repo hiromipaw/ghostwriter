@@ -46,14 +46,14 @@ class SettingsPanel(QtWidgets.QDialog):
         self.setModal(True)
         self.setWindowTitle(strings._("gui_settings_window_title"))
         self.setWindowIcon(
-            QtGui.QIcon(self.base.get_resource_path("images/ghostwriter.png"))
+          QtGui.QIcon(self.base.get_resource_path("images/ghostwriter.png"))
         )
 
         self.system = platform.system()
 
         self.top_label = QtWidgets.QLabel()
         self.top_label.setPixmap(
-            QtGui.QPixmap(self.base.get_resource_path("images/ghostwriter.png"))
+          QtGui.QPixmap(self.base.get_resource_path("images/ghostwriter.png"))
         )
 
         self.top_layout = QtWidgets.QHBoxLayout()
@@ -64,9 +64,9 @@ class SettingsPanel(QtWidgets.QDialog):
         self.upstream_git_repository_label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
         self.upstream_git_repository_field = QtWidgets.QLineEdit(
-            self.old_settings.get(
-                "upstream_git_repository"
-            )
+          self.old_settings.get(
+            "upstream_git_repository"
+          )
         );
 
         self.upstream_git_layout = QtWidgets.QHBoxLayout()
@@ -81,9 +81,9 @@ class SettingsPanel(QtWidgets.QDialog):
         self.git_repository_label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
         self.git_repository_field = QtWidgets.QLineEdit(
-            self.old_settings.get(
-                "git_repository"
-            )
+          self.old_settings.get(
+            "git_repository"
+          )
         );
 
         self.git_layout = QtWidgets.QHBoxLayout()
@@ -103,10 +103,10 @@ class SettingsPanel(QtWidgets.QDialog):
         self.docker_radio_button.toggled.connect(self.radio_clicked)
 
         if self.old_settings.get("onion_share_method") == "docker":
-            self.docker_radio_button.setChecked(True)
+          self.docker_radio_button.setChecked(True)
         else:
-            self.onion_radio_button.setChecked(True)
-            
+          self.onion_radio_button.setChecked(True)
+
         self.radio_layout = QtWidgets.QHBoxLayout()
         self.radio_layout.addWidget(self.onion_method_label)
         self.radio_layout.addWidget(self.onion_radio_button)
@@ -138,11 +138,11 @@ class SettingsPanel(QtWidgets.QDialog):
     def radio_clicked(self):
         radioButton = self.sender()
         if radioButton.isChecked():
-            self.base.log('[GhostWriterGui][SettingsPanel]', 'Share method is %s' % (radioButton.share))
-            settings = self.settings_from_panel()
-            settings.set(
-                "onion_share_method", radioButton.share
-            )
+          self.base.log('[GhostWriterGui][SettingsPanel]', 'Share method is %s' % (radioButton.share))
+          settings = self.settings_from_panel()
+          settings.set(
+            "onion_share_method", radioButton.share
+          )
 
     def cancel_clicked(self):
         self.base.log('[GhostWriterGui][SettingsPanel]', 'Cancel settings')
@@ -152,35 +152,35 @@ class SettingsPanel(QtWidgets.QDialog):
         self.base.log('[GhostWriterGui][SettingsPanel]', 'Save settings')
 
         def changed(s1, s2, keys):
-            """
-            Compare the Settings objects s1 and s2 and return true if any values
-            have changed for the given keys.
-            """
-            for key in keys:
-                if s1.get(key) != s2.get(key):
-                    return True
-            return False
+          """
+          Compare the Settings objects s1 and s2 and return true if any values
+          have changed for the given keys.
+          """
+          for key in keys:
+            if s1.get(key) != s2.get(key):
+                return True
+          return False
 
         settings = self.settings_from_panel()
         if settings:
-            # If language changed, inform user they need to restart OnionShare
-            if changed(settings, self.old_settings, ["locale"]):
-                # Look up error message in different locale
-                new_locale = settings.get("locale")
-                if (
-                    new_locale in strings.translations
-                    and "settings_language_changed_notice"
-                    in strings.translations[new_locale]
-                ):
-                    notice = strings.translations[new_locale][
-                        "settings_language_changed_notice"
-                    ]
-                else:
-                    notice = strings._("settings_language_changed_notice")
-                Alert(self.base, notice, QtWidgets.QMessageBox.Information)
+          # If language changed, inform user they need to restart OnionShare
+          if changed(settings, self.old_settings, ["locale"]):
+            # Look up error message in different locale
+            new_locale = settings.get("locale")
+            if (
+                new_locale in strings.translations
+                and "settings_language_changed_notice"
+                in strings.translations[new_locale]
+            ):
+                notice = strings.translations[new_locale][
+                  "settings_language_changed_notice"
+                ]
+            else:
+                notice = strings._("settings_language_changed_notice")
+            Alert(self.base, notice, QtWidgets.QMessageBox.Information)
 
-            # Save the new settings
-            settings.save()
+          # Save the new settings
+          settings.save()
 
         self.settings_saved.emit()
         self.close()
@@ -190,20 +190,20 @@ class SettingsPanel(QtWidgets.QDialog):
         settings = Settings(self.base, self.config)
 
         settings.set(
-            "git_repository", self.git_repository_field.text()
+          "git_repository", self.git_repository_field.text()
         )
 
         settings.set(
-            "upstream_git_repository", self.upstream_git_repository_field.text()
+          "upstream_git_repository", self.upstream_git_repository_field.text()
         )
 
         if self.onion_radio_button.isChecked():
-            settings.set(
-                "onion_share_method", "onionshare"
-            )
+          settings.set(
+            "onion_share_method", "onionshare"
+          )
         else:
-            settings.set(
-                "onion_share_method", "docker"
-            )
+          settings.set(
+            "onion_share_method", "docker"
+          )
 
         return settings
