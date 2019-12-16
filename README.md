@@ -1,7 +1,7 @@
 GhostWriter lets you edit a website via lektor, a flexible and powerful static
 content management system for building complex and beautiful websites out of
 flat files — for people who do not want to make a compromise between a CMS and a
-static blog engine.  
+static blog engine.
 GhostWriter works by starting a lektor project that you have cloned via git. If
 the project is a fork, you can keep up with upstream by easily rebasing. The
 project can be started locally and be edited as a CMS. Finally it also makes
