@@ -65,16 +65,19 @@ license = "GPL v3"
 keywords = "lektor, website, docker, container, ghostwriter, onionshare, onion, tor, anonymous, web server"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Topic :: Software Development",
+    "Topic :: Software Development :: Code Generators",
     "Topic :: Security :: Cryptography",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Intended Audience :: End Users/Desktop",
     "Operating System :: OS Independent",
     "Environment :: Web Environment",
+    "Environment :: X11 Applications :: Qt",
 ]
 data_files = [
     (os.path.join(sys.prefix, "share/ghostwriter"), file_list("share")),
-    (os.path.join(sys.prefix, "share/ghostwriter/containers"), file_list("share/locale")),
+    (os.path.join(sys.prefix, "share/ghostwriter/containers"), file_list("share/containers")),
+    (os.path.join(sys.prefix, "share/ghostwriter/containers/website"), file_list("share/containers/website")),
+    (os.path.join(sys.prefix, "share/ghostwriter/containers/website/tor"), file_list("share/containers/website/tor")),
     (os.path.join(sys.prefix, "share/ghostwriter/images"), file_list("share/images")),
     (os.path.join(sys.prefix, "share/ghostwriter/locale"), file_list("share/locale")),
 ]
