@@ -51,9 +51,9 @@ coll = COLLECT(
 if p == 'Darwin':
     app = BUNDLE(
         coll,
-        name='OnionShare.app',
+        name='GhostWriter.app',
         icon='ghostwriter.icns',
-        bundle_identifier='com.micahflee.ghostwriter',
+        bundle_identifier='com.hiro.ghostwriter',
         info_plist={
             'CFBundleShortVersionString': version,
             'NSHighResolutionCapable': 'True'
