@@ -52,7 +52,7 @@ if p == 'Darwin':
     app = BUNDLE(
         coll,
         name='GhostWriter.app',
-        icon='ghostwriter.icns',
+        icon='install/ghostwriter.icns',
         bundle_identifier='com.hiro.ghostwriter',
         info_plist={
             'CFBundleShortVersionString': version,
