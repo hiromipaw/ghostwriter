@@ -11,10 +11,11 @@ a = Analysis(
     binaries=None,
     datas=[
         ('../share/version.txt', 'share'),
-        ('../share/images/*', 'share/images'),
+        ('../share/images/ghostwriter-grayscale.png', 'share/images'),
+        ('../share/images/GhostWriter.png', 'share/images'),
+        ('../share/images/ghostwriter.svg', 'share/images'),
+        ('../share/images/icons/*', 'share/images/icons'),
         ('../share/locale/*', 'share/locale'),
-        ('../share/containers/*', 'share/containers'),
-        ('../share/containers/website/*', 'share/containers/website'),
         ('../share/containers/website/tor/*', 'share/containers/website/tor'),
         ('../install/licenses/*', 'licenses')
     ],
