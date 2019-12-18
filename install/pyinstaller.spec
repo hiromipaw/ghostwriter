@@ -18,7 +18,9 @@ a = Analysis(
         ('../share/containers/website/tor/*', 'share/containers/website/tor'),
         ('../install/licenses/*', 'licenses')
     ],
-    hiddenimports=[],
+    hiddenimports=[
+      'PyQt5.sip',
+    ],
     hookspath=[],
     runtime_hooks=[],
     win_no_prefer_redirects=False,
