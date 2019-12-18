@@ -15,7 +15,7 @@ a = Analysis(
         ('../share/locale/*', 'share/locale'),
         ('../share/containers/*', 'share/containers'),
         ('../share/containers/website/*', 'share/containers/website'),
-        ('../share/containers/website/tor*', 'share/containers/website/tor'),
+        ('../share/containers/website/tor/*', 'share/containers/website/tor'),
         ('../install/licenses/*', 'licenses')
     ],
     hiddenimports=[],
