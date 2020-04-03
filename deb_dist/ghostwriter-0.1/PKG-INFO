@@ -1,0 +1,23 @@
+Metadata-Version: 1.2
+Name: ghostwriter
+Version: 0.1
+Summary: GhostWriter lets you edit a website via lektor, a flexible and powerful static content management system for building complex and beautiful websites out of flat files — for people who do not want to make a compromise between a CMS and a static blog engine.  GhostWriter works by starting a lektor project that you have cloned via git. If the project is a fork, you can keep up with upstream by easily rebasing. The project can be started locally and be edited as a CMS. Finally it also makes your website accessible as a Tor onion service, by using either OnionShare or a nginx webserver on a Docker container. The onion setup is completely transparen for the end user,  that will be able to access it via Tor Browser
+Home-page: https://github.com/hiromipaw/ghostwriter
+Author: Hiro
+Author-email: hiro@torproject.org
+Maintainer: Hiro
+Maintainer-email: hiro@torproject.org
+License: GPL v3
+Description: GhostWriter lets you edit a website via lektor, a flexible and powerful static content management system for building complex and beautiful websites out of flat files — for people who do not want to make a compromise between a CMS and a static blog engine.  GhostWriter works by starting a lektor project that you have cloned via git. If the project is a fork, you can keep up with upstream by easily rebasing. The project can be started locally and be edited as a CMS. Finally it also makes your website accessible as a Tor onion service, by using either OnionShare or a nginx webserver on a Docker container. The onion setup is completely transparen for the end user,  that will be able to access it via Tor Browser
+        
+        If you want to edit a website with the ease of a CMS and share it as static pages GhostWriter starts a lektor server locally and include some git functionalities to transparently upload your changes or retrieve updates from an upstream repository. GhostWriter also allow you to share your work via .onion, by using OnionShare or a nginx webserver running on a Docker container. Everything is always hosted on your machine, and disappear when you shutdown GhostWriter. The .onion can be accessed via Tor Browser. 
+Keywords: lektor,website,docker,container,ghostwriter,onionshare,onion,tor,anonymous,web server
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: Topic :: Security :: Cryptography
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Operating System :: OS Independent
+Classifier: Environment :: Web Environment
+Classifier: Environment :: X11 Applications :: Qt

@@ -1,0 +1,25 @@
+Format: 1.8
+Date: Tue, 17 Dec 2019 14:25:13 +0100
+Source: ghostwriter
+Binary: ghostwriter
+Architecture: all
+Version: 0.1-1
+Distribution: disco
+Urgency: low
+Maintainer: Hiro <hiro@torproject.org>
+Changed-By: Hiro <hiro@torproject.org>
+Description:
+ ghostwriter - GhostWriter lets you edit a website via lektor, a flexible a
+Changes:
+ ghostwriter (0.1-1) disco; urgency=low
+ .
+   * source package automatically created by stdeb 0.8.5
+Checksums-Sha1:
+ 764c6b3216203282903c1b58645617f227abcbd1 34224 ghostwriter_0.1-1_all.deb
+ 540e06ab0872dc02c9772af19ebad660ea16a3ef 12387 ghostwriter_0.1-1_amd64.buildinfo
+Checksums-Sha256:
+ b1f59b9f6f9616d4306ee60b43e1d1426aba23f56b9c0a2f67e1df340e2d4be1 34224 ghostwriter_0.1-1_all.deb
+ ff8ec1f3af9b79f437a49935aeddaf0ea5926af31948769bf42475f21ab8137a 12387 ghostwriter_0.1-1_amd64.buildinfo
+Files:
+ 0d717a5952af1f6a339cb7d7daa10d34 34224 python optional ghostwriter_0.1-1_all.deb
+ 8add8d182d1adc6ed66b3aa15ab5f879 12387 python optional ghostwriter_0.1-1_amd64.buildinfo

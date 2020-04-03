@@ -1,0 +1,13 @@
+Package: ghostwriter
+Version: 0.1-1
+Architecture: all
+Maintainer: Hiro <hiro@torproject.org>
+Installed-Size: 141
+Depends: python3:any (>= 3.5~), python3, python3-pyqt5, python3-distutils, python3-git, onionshare
+Section: python
+Priority: optional
+Homepage: https://github.com/hiromipaw/ghostwriter
+Description: GhostWriter lets you edit a website via lektor, a flexible a
+ GhostWriter lets you edit a website via lektor, a flexible and powerful static content management system for building complex and beautiful websites out of flat files — for people who do not want to make a compromise between a CMS and a static blog engine.  GhostWriter works by starting a lektor project that you have cloned via git. If the project is a fork, you can keep up with upstream by easily rebasing. The project can be started locally and be edited as a CMS. Finally it also makes your website accessible as a Tor onion service, by using either OnionShare or a nginx webserver on a Docker container. The onion setup is completely transparen for the end user,  that will be able to access it via Tor Browser
+ .
+ If you want to edit a website with the ease of a CMS and share it as static pages GhostWriter starts a lektor server locally and include some git functionalities to transparently upload your changes or retrieve updates from an upstream repository. GhostWriter also allow you to share your work via .onion, by using OnionShare or a nginx webserver running on a Docker container. Everything is always hosted on your machine, and disappear when you shutdown GhostWriter. The .onion can be accessed via Tor Browser.

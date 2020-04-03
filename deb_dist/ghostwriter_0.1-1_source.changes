@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Tue, 17 Dec 2019 14:25:13 +0100
+Source: ghostwriter
+Architecture: source
+Version: 0.1-1
+Distribution: disco
+Urgency: low
+Maintainer: Hiro <hiro@torproject.org>
+Changed-By: Hiro <hiro@torproject.org>
+Changes:
+ ghostwriter (0.1-1) disco; urgency=low
+ .
+   * source package automatically created by stdeb 0.8.5
+Checksums-Sha1:
+ 2df94fdeb8a9759420757c79b20b75bad706042e 947 ghostwriter_0.1-1.dsc
+ 2afd8a6956def2591c8fd737e0e65a4ed8ac3821 51803 ghostwriter_0.1.orig.tar.gz
+ 544f83b288a396ad1c09cb6417c9e07f0bdb6135 1492 ghostwriter_0.1-1.debian.tar.xz
+ 7a17d5a9ef07cb45ebd16155c7104b28d406ceb0 12372 ghostwriter_0.1-1_source.buildinfo
+Checksums-Sha256:
+ ab743691db67b9532ee8d84e87e155a59f702a2191e78267cee470140549b3c9 947 ghostwriter_0.1-1.dsc
+ 976fee6a6b68c85e3ea1d754ff6f73632d7edd07b7ceb148426d147b38a32429 51803 ghostwriter_0.1.orig.tar.gz
+ 9c617849d689bee7c12f8f31dbf0f806c59d43e7db955a4895b630d80707cdb9 1492 ghostwriter_0.1-1.debian.tar.xz
+ 7f75dfe7f7da6a5d7c7d07c9e45ed57924582d7345cce80e4ebc1c8befab3c37 12372 ghostwriter_0.1-1_source.buildinfo
+Files:
+ 58f18e6e4ebd9f106c1ff4a6be95b43b 947 python optional ghostwriter_0.1-1.dsc
+ 6a8ab60cb1ef9a3f7d323d921fd73d93 51803 python optional ghostwriter_0.1.orig.tar.gz
+ 8d45b1f711918b856e0ad3594b1c09e9 1492 python optional ghostwriter_0.1-1.debian.tar.xz
+ 5368dc39a0062f7b3c883087ca492e7f 12372 python optional ghostwriter_0.1-1_source.buildinfo
