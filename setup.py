@@ -44,23 +44,14 @@ description = (
     """container. The onion setup is completely transparen for the end user, """
     """ that will be able to access it via Tor Browser"""
 )
-long_description = (
-    description
-    + "\n\n"
-    + (
-        """If you want to edit a website with the ease of a CMS and share it as """
-        """static pages GhostWriter starts a lektor server locally and include """
-        """some git functionalities to transparently upload your changes or """
-        """retrieve updates from an upstream repository. GhostWriter also allow """
-        """you to share your work via .onion, by using OnionShare or a nginx """
-        """webserver running on a Docker container. Everything is always hosted """
-        """on your machine, and disappear when you shutdown GhostWriter. """
-        """The .onion can be accessed via Tor Browser. """
-    )
-)
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 author = "Hiro"
 author_email = "hiro@torproject.org"
 url = "https://github.com/hiromipaw/ghostwriter"
+download_url = "https://github.com/hiromipaw/ghostwriter/packages/ghostwriter-0.1.tar.gz"
 license = "GPL v3"
 keywords = "lektor, website, docker, container, ghostwriter, onionshare, onion, tor, anonymous, web server"
 classifiers = [
@@ -93,6 +84,7 @@ setup(
     maintainer=author,
     maintainer_email=author_email,
     url=url,
+    download_url=download_url,
     license=license,
     keywords=keywords,
     classifiers=classifiers,
@@ -106,4 +98,18 @@ setup(
     include_package_data=True,
     scripts=["install/scripts/ghostwriter", "install/scripts/ghostwriter-gui"],
     data_files=data_files,
+    install_requires=[
+          'click',
+          'Cryptography',
+          'Docker',
+          'GitPython',
+          'itsdangerous',
+          'Lektor',
+          'PyInstaller',
+          'PyQt5',
+          'PyQt5-sip',
+          'PySocks',
+          'sip',
+          'Werkzeug'
+    ],
 )
