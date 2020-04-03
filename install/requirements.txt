@@ -9,4 +9,4 @@ PyQt5==5.13.1
 PyQt5-sip==12.7.0
 PySocks==1.6.7
 sip==4.19.8
-Werkzeug==0.15
+Werkzeug==0.15.3
