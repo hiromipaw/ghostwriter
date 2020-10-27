@@ -1,5 +1,5 @@
 click==6.7
-Cryptography==2.8
+Cryptography==3.2
 Docker==3.4.1
 GitPython==3.0.5
 itsdangerous==0.24
